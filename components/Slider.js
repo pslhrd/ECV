@@ -22,7 +22,6 @@ export default class Slider {
     initEvents() {
         const target = this.webgl.canvas;
         this.event = new Event('SLIDE:CHANGE');
-        // target.addEventListener('click', this.nextSlide.bind(this));
     }
 
     initFirstSlide() {
@@ -31,9 +30,14 @@ export default class Slider {
     }
 
     setSlide(index) {
+        if (this.current === index) return;
+
         if (this.oldSlide) {
             this.oldSlide.leave();
         }
+
+        this.current = index;
+
         if (!this.slides[index]) return;
         this.slides[index].enter();
         this.oldSlide = this.slides[index];

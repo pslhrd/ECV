@@ -24,7 +24,10 @@ export default class Slide {
     }
 
     initGeometry() {
-        const material = new MeshStandardMaterial({ side: DoubleSide });
+        const mult = 1.3;
+        const color = new Color(Math.random() * mult, Math.random() * mult, Math.random() * mult);
+
+        const material = new MeshStandardMaterial({ color: color, side: DoubleSide });
         const mesh = this.webgl.shirt.clone();
         mesh.material = material;
 
@@ -71,16 +74,16 @@ export default class Slide {
 
         this.posTween = gsap.to(this.mesh.position, {
             x: 1,
-            duration: 2,
-            ease: 'expo.out',
+            duration: 1,
+            ease: 'power3.out',
         });
 
         this.scaleTween = gsap.to(this.mesh.scale, {
             x: 0,
             y: 0,
             z: 0,
-            duration: 2,
-            ease: 'expo.out',
+            duration: 1,
+            ease: 'power3.out',
         });
     }
 

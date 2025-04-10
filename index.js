@@ -26,7 +26,11 @@ async function init() {
     });
     renderer.setPixelRatio(pr);
 
+    // DOM
+    webgl.viewport = new Vector2();
     webgl.gui = new Pane();
+
+    resize();
 
     await preload();
 
@@ -34,8 +38,6 @@ async function init() {
 
     // Start Update
     gsap.ticker.add(update);
-
-    resize();
 }
 
 async function preload() {
@@ -61,7 +63,6 @@ function start() {
     webgl.ui = new UI();
 
     webgl.cube = new Cube();
-    webgl.viewport = new Vector2();
 }
 
 function update(time, deltaTime, frame) {
@@ -85,7 +86,7 @@ function resize() {
     webgl.viewport.set(width, height);
     webgl.pixelRatio = window.devicePixelRatio;
 
-    webgl.camera.resize();
+    webgl.camera?.resize();
 
     renderer?.setSize(width, height);
 }

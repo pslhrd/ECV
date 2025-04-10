@@ -15,6 +15,8 @@ export default class Camera {
         this.active = this.main;
 
         this.createPaneFolder();
+
+        this.resize();
     }
 
     createCamera() {
