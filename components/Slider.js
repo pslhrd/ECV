@@ -1,5 +1,6 @@
 import Slide from './Slide';
 import { getWebGL } from '..';
+import { Object3D } from 'three';
 
 export default class Slider {
     constructor() {

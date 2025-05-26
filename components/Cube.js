@@ -11,7 +11,7 @@ export default class Cube {
     }
 
     init() {
-        this.grid = this.createDebug();
+        // this.grid = this.createDebug();
         // this.cube = this.createGeometry();
     }
 
@@ -28,7 +28,7 @@ export default class Cube {
 
     createDebug() {
         const mesh = new GridHelper(10, 10);
-        // this.scene.add(mesh);
+        this.scene.add(mesh);
         return mesh;
     }
 

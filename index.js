@@ -1,19 +1,21 @@
 import gsap from 'gsap';
-import { PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import { PerspectiveCamera, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
+import { Pane } from 'tweakpane';
+
+import { loadGLTF, loadTexture } from './utils';
+
+import { createDrag } from './drag';
+
 import Camera from './components/Camera';
 import Cube from './components/Cube';
-import { Pane } from 'tweakpane';
-import Slider from './components/Slider';
-import Light from './components/Light';
-
-import { loadGLTF } from './utils';
-import UI from './components/UI';
+import Earth from './components/Earth';
 
 let canvas, webgl, renderer;
 
 webgl = {};
 
 canvas = document.createElement('canvas');
+canvas.classList.add('webgl');
 const app = document.querySelector('#app');
 app.appendChild(canvas);
 
@@ -30,6 +32,16 @@ async function init() {
     webgl.viewport = new Vector2();
     webgl.gui = new Pane();
 
+    // STATES
+    webgl.scroll = 0;
+
+    // UNIFORMS
+    webgl.uniforms = {
+        time: { type: 'f', value: 0 },
+    };
+
+    webgl.drag = createDrag(webgl);
+
     resize();
 
     await preload();
@@ -41,37 +53,58 @@ async function init() {
 }
 
 async function preload() {
-    await loadGLTF('/models/model.glb', {
-        onLoad: gltf => {
-            const scene = gltf.scene;
+    const textureLoader = new TextureLoader();
+    webgl.textures = {};
 
-            scene.traverse(node => {
-                if (node.name === 'TEE') {
-                    webgl.shirt = node;
-                }
-            });
+    await loadTexture('/textures/bump.jpg', {
+        onLoad: node => {
+            webgl.textures.earth = node;
         },
     });
+
+    await loadTexture('/textures/clouds.jpg', {
+        onLoad: node => {
+            webgl.textures.clouds = node;
+        },
+    });
+
+    await loadTexture('/textures/noise.png', {
+        repeat: true,
+        onLoad: node => {
+            webgl.textures.noise = node;
+        },
+    });
+
+    // await loadGLTF('/models/model.glb', {
+    //     onLoad: gltf => {
+    //         const scene = gltf.scene;
+    //         scene.traverse(node => {
+    //             if (node.name === 'TEE') {
+    //                 webgl.shirt = node;
+    //             }
+    //         });
+    //     },
+    // });
 }
 
 function start() {
     webgl.scene = new Scene();
-    webgl.slider = new Slider();
     webgl.camera = new Camera();
-    webgl.light = new Light();
-
-    webgl.ui = new UI();
-
     webgl.cube = new Cube();
+    webgl.earth = new Earth();
 }
 
 function update(time, deltaTime, frame) {
-    webgl.camera.update();
-    webgl.cube.update();
+    webgl.uniforms.time.value = time * 0.001;
 
-    webgl.slider.slides.forEach(slide => {
+    webgl.camera?.update();
+    webgl.cube?.update();
+    webgl.earth?.update();
+
+    webgl.slider?.slides.forEach(slide => {
         slide?.update();
     });
+
     render();
 }
 
@@ -85,13 +118,12 @@ function resize() {
     webgl.viewportRatio = width / height;
     webgl.viewport.set(width, height);
     webgl.pixelRatio = window.devicePixelRatio;
-
     webgl.camera?.resize();
-
     renderer?.setSize(width, height);
 }
 
-window.addEventListener('DOMContentLoaded', init);
+init();
+
 window.addEventListener('resize', resize);
 
 export function getWebGL() {

@@ -18,6 +18,7 @@ export default class Slide {
         this.props = opts;
 
         this.scaleTween = null;
+
         this.posTween = null;
 
         this.mesh = this.initGeometry();
@@ -89,5 +90,7 @@ export default class Slide {
 
     update() {
         this.mesh.rotation.y = this.mesh.position.x;
+        this.mesh.rotation.x = this.webgl.scroll * Math.PI;
+        this.mesh.rotation.z = this.webgl.scroll * Math.PI;
     }
 }

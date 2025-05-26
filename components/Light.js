@@ -6,8 +6,6 @@ export default class Light {
         this.webgl = getWebGL();
         this.scene = this.webgl.scene;
 
-        console.log('here');
-
         this.init();
     }
 
@@ -16,7 +14,6 @@ export default class Light {
         this.scene.add(ambientLight);
 
         const directionalLight = new DirectionalLight(0xffffff, 1.5);
-        console.log(this.scene);
         this.scene.add(directionalLight);
     }
 }
